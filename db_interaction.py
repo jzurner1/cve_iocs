@@ -8,7 +8,12 @@ mydb = mysql.connector.connect(  # insert your own
 )
 
 
-def check_if_cve_in_db(cve_id):  # done
+def check_if_cve_in_db(cve_id):
+    """ check if a specific CVE ID is already in known_exploited database
+
+    :param cve_id: cve identifier like 'CVE-2024-55956'
+    :return: boolean
+    """
     mycursor = mydb.cursor()
     q = "SELECT * FROM known_exploited WHERE cve_id = %s"
     mycursor.execute(q, (clean_value(cve_id),))
@@ -19,7 +24,14 @@ def check_if_cve_in_db(cve_id):  # done
     else:
         return True
 
-def check_if_ioc_in_db(indicator_id, cve_id):  # done
+
+def check_if_ioc_in_db(indicator_id, cve_id):
+    """ check if IOC is already in cve_iocs database
+
+    :param indicator_id: indicator ID used by Pulse, such as '4003607808'
+    :param cve_id: cve identifier like 'CVE-2024-55956'
+    :return: boolean
+    """
     mycursor = mydb.cursor()
     q = f"SELECT * FROM cve_iocs WHERE indicator_id = \"{clean_value(indicator_id)}\" AND cve_id = \"{clean_value(cve_id)}\";"
     mycursor.execute(q)
@@ -31,14 +43,23 @@ def check_if_ioc_in_db(indicator_id, cve_id):  # done
         return True
 
 
-def clean_value(val):  # done
-    # last minute sanitization
+def clean_value(val):
+    """ crummy sanitization function to "prevent" sql injection
+
+    :param val: value to sanitize
+    :return: sanitized value
+    """
     if isinstance(val, str):
         val = val.replace("'", "").replace('"', '').replace(';', '').replace('\\', '')
     return val
 
 
-def retrieve_cve_data_from_db(cve_id):  # done
+def retrieve_cve_data_from_db(cve_id)
+    """ get info about a CVE from known_exploited database
+
+    :param cve_id: cve identifier like 'CVE-2024-55956'
+    :return: dict of cve information
+    """
     mycursor = mydb.cursor()
     q = "SELECT * FROM known_exploited WHERE cve_id = %s"
     mycursor.execute(q, (clean_value(cve_id),))
@@ -60,7 +81,12 @@ def retrieve_cve_data_from_db(cve_id):  # done
     return dc
 
 
-def retrieve_ioc_data_from_db(indicator_id):  # done
+def retrieve_ioc_data_from_db(indicator_id):
+    """ get ioc data from the cve_iocs database
+    
+    :param indicator_id: indicator ID used by Pulse, such as '4003607808'
+    :return: dict of ioc information
+    """
     mycursor = mydb.cursor()
     q = "SELECT * FROM cve_iocs WHERE indicator_id = %s"
     mycursor.execute(q, (clean_value(indicator_id),))
@@ -81,6 +107,11 @@ def retrieve_ioc_data_from_db(indicator_id):  # done
 
 
 def retrieve_cve_iocs_from_db(cve_id):
+    """ get iocs from the cve_iocs database given a cve_id
+
+    :param cve_id: cve identifier like 'CVE-2024-55956'
+    :return: dict of ioc information
+    """
     mycursor = mydb.cursor()
     q = "SELECT * FROM cve_iocs WHERE cve_id = %s"
     mycursor.execute(q, (clean_value(cve_id),))
@@ -105,6 +136,10 @@ def retrieve_cve_iocs_from_db(cve_id):
 
 
 def get_all_kevs_from_db():
+    """ get all known exploited vulns from known_exploited db
+
+    :return: dict of cve information
+    """
     mycursor = mydb.cursor()
     q = "SELECT * FROM known_exploited"
     mycursor.execute(q)
@@ -127,8 +162,12 @@ def get_all_kevs_from_db():
     return kevs
 
 
+def add_cve_to_db(cve_info):
+    """ add a single cve to the known_exploited db
 
-def add_cve_to_db(cve_info):  # done
+    :param cve_info: dict about a singular cve
+    :return: 1 if successful, 0 if not
+    """
     # known_exploited: id, cve_id, vendor, product, vuln_name, campaign_use, notes
     mycursor = mydb.cursor()
     if check_if_cve_in_db(cve_info['cveID']):
@@ -159,8 +198,12 @@ def add_cve_to_db(cve_info):  # done
         return 0
 
 
+def add_ioc_to_db(ioc):
+    """ add an ioc to cve_iocs db
 
-def add_ioc_to_db(ioc):  # done
+    :param ioc: dict of singular ioc information
+    :return: 1 if successful, 0 if not
+    """
     # cve_iocs: id, cve_id, ioc_type, ioc_value, indicator_id
     if check_if_ioc_in_db(ioc['indicator_id'], ioc['cve_id']):
         return 1
@@ -183,5 +226,4 @@ def add_ioc_to_db(ioc):  # done
     except mysql.connector.errors.ProgrammingError as e:
         print(f"[-] Error in query syntax - are the data types correct? {q}\n{e}")
         return 0
-
 

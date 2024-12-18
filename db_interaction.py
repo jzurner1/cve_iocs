@@ -66,7 +66,7 @@ def clean_value(val):
     return val
 
 
-def retrieve_cve_data_from_db(cve_id)
+def retrieve_cve_data_from_db(cve_id):
     """ get info about a CVE from known_exploited database
 
     :param cve_id: cve identifier like 'CVE-2024-55956'

@@ -15,7 +15,10 @@ def otx_get_cve_info(cve_id):
     try:
         resp = requests.get(endpoint, headers=headers)
     except requests.exceptions.ConnectTimeout:
-        print("[-] connection failure in otx_get_cve_info()")
+        print("[-] connection failure in otx_get_cve_info()\n")
+        return 1
+    except requests.exceptions.ConnectionError:
+        print('[-] connection failure in otx_get_cve_info()\n')
         return 1
 
     if resp.status_code == 404:
@@ -70,8 +73,10 @@ def otx_get_iocs_from_pulse_ids(pulse_ids, cve_id):
         try:
             resp = requests.get(endpoint, headers=headers)
         except requests.exceptions.ConnectTimeout:
-            print("[-] connection failure in otx_get_iocs_from_pulse_ids()")
             continue
+        except requests.exceptions.ConnectionError:
+            continue
+
         try:
             pulses_raw.append(resp.json())
         except:

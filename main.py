@@ -4,7 +4,7 @@ import db_interaction
 import csv
 
 
-def add_all_kev_to_cve_db():  # done
+def add_all_kev_to_cve_db():
     """ add all CVEs from the official KEV document to the CVE database
 
     :return: list of CVE IDs, just for fun
@@ -17,7 +17,7 @@ def add_all_kev_to_cve_db():  # done
     return list(set(cve_ids))
 
 
-def add_all_pulse_ioc_to_db(cve_id_list):  # done
+def add_all_pulse_ioc_to_db(cve_id_list):
     """ add all IOCs from a list of CVEs based on OTX Pulses
 
     :param cve_id_list: list of CVE IDs
@@ -154,5 +154,5 @@ def get_main_action_choice():
 
 
 if __name__ == "__main__":
-    get_main_action_choice()
+    get_main_action_choice()  # replace with `db_interaction.set_up_db()` on first run to set up the database
 

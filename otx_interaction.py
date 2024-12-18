@@ -12,7 +12,11 @@ def otx_get_cve_info(cve_id):
     headers = {"X-OTX-API-KEY": otx_api_key}
     endpoint = f"https://otx.alienvault.com/api/v1/indicators/cve/{cve_id}"
 
-    resp = requests.get(endpoint, headers=headers)
+    try:
+        resp = requests.get(endpoint, headers=headers)
+    except requests.exceptions.ConnectTimeout:
+        print("[-] connection failure in otx_get_cve_info()")
+        return 1
 
     if resp.status_code == 404:
         print(f"[-] invalid CVE ID '{cve_id}'")
@@ -63,8 +67,11 @@ def otx_get_iocs_from_pulse_ids(pulse_ids, cve_id):
     for pulse_id in pulse_ids:
         headers = {"X-OTX-API-KEY": otx_api_key}
         endpoint = f"https://otx.alienvault.com/api/v1/pulses/{pulse_id}"
-
-        resp = requests.get(endpoint, headers=headers)
+        try:
+            resp = requests.get(endpoint, headers=headers)
+        except requests.exceptions.ConnectTimeout:
+            print("[-] connection failure in otx_get_iocs_from_pulse_ids()")
+            continue
         try:
             pulses_raw.append(resp.json())
         except:

@@ -10,6 +10,8 @@ def add_all_kev_to_cve_db():
     :return: list of CVE IDs, just for fun
     """
     kev_json = kev_interaction.get_kev_json()
+    if kev_json == 0:
+        return 0
     cve_ids = []
     for kev in kev_json['vulnerabilities']:
         cve_ids.append(kev['cveID'])
@@ -51,7 +53,12 @@ def update_all_cves_and_iocs():
     """
     cve_ids = []
 
-    kevj = kev_interaction.get_kev_json()['vulnerabilities']
+    try:
+        kevj = kev_interaction.get_kev_json()['vulnerabilities']
+    except TypeError:
+        print('[-] KEV database returned no results, check your internet connection')
+        return 1
+
     for k in kevj:
         cve_ids.append(k['cveID'])
 
@@ -151,8 +158,6 @@ def get_main_action_choice():
 
 
 
-
-
 if __name__ == "__main__":
-    get_main_action_choice()  # replace with `db_interaction.set_up_db()` on first run to set up the database
+    get_main_action_choice()  # on first run, use db_interaction.set_up_db()
 

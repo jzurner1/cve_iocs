@@ -2,7 +2,7 @@ import requests
 import time
 
 
-def otx_get_cve_info(cve_id):  # done
+def otx_get_cve_info(cve_id):
     """ get raw json about a CVE from OTX
 
     :param cve_id: cve identifier
@@ -28,7 +28,7 @@ def otx_get_cve_info(cve_id):  # done
     return resp.json()
 
 
-def otx_get_pulse_ids(cve_json, pulse_limit=10):  # done
+def otx_get_pulse_ids(cve_json, pulse_limit=10):
     """ get a list of pulse ids from OTX
 
     :param cve_json: json from otx_get_cve_info()
@@ -49,7 +49,7 @@ def otx_get_pulse_ids(cve_json, pulse_limit=10):  # done
     return pulse_ids
 
 
-def otx_get_iocs_from_pulse_ids(pulse_ids, cve_id):  # done
+def otx_get_iocs_from_pulse_ids(pulse_ids, cve_id):
     """ get list of iocs from a list of pulse ids
 
     :param pulse_ids: list of pulse ids from otx_get_pulse_ids()

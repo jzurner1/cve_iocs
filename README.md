@@ -4,11 +4,12 @@ Currently, the script mainly uses CISA's KEV catalogue and OTX's threat hunting 
 
 ## Starting up
 1. Set up a local MySQL instance
-2. In `db_interaction()`, set the `mydb` variable information. Set `database="ttps"`
-3. Get an OTX API key for free from https://otx.alienvault.com/
-4. Replace all instances of `otx_api_key = ""` with your API key
-5. In `main.py` under `if __name__ == "__main__":`, insert and run `db_interaction.set_up_db()` to create the database and tables
-6. In `main.py` under `if __name__ == "__main__":`, insert and run `get_main_action_choice()` to begin the script
+2. Create a database called `ttps`
+3. In `db_interaction()`, set the `mydb` variable information. Set `database="ttps"`
+4. Get an OTX API key for free from https://otx.alienvault.com/
+5. Replace all instances of `otx_api_key = ""` with your API key
+6. In `main.py` under `if __name__ == "__main__":`, insert and run `db_interaction.set_up_db()` to create the database and tables
+7. In `main.py` under `if __name__ == "__main__":`, insert and run `get_main_action_choice()` to begin the script
 
 
 ## Notes

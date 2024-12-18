@@ -14,7 +14,6 @@ def set_up_db():
     :return: nothing
     """
     mycursor = mydb.cursor()
-    mycursor.execute("CREATE DATABASE ttps;")
     mycursor.execute("USE ttps;")
     mycursor.execute("CREATE TABLE known_exploited(id INT AUTO_INCREMENT, cve_id VARCHAR(100), vendor VARCHAR(100), product VARCHAR(100), vuln_name VARCHAR(255), campaign_use boolean, notes text, PRIMARY KEY(id));")
     mycursor.execute("CREATE TABLE cve_iocs(id INT AUTO_INCREMENT, cve_id VARCHAR(100), ioc_type VARCHAR(100), ioc_value VARCHAR(255), indicator_id VARCHAR(20), PRIMARY KEY(id));")

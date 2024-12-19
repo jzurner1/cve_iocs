@@ -15,8 +15,10 @@ def set_up_db():
     """
     mycursor = mydb.cursor()
     mycursor.execute("USE ttps;")
-    mycursor.execute("CREATE TABLE known_exploited(id INT AUTO_INCREMENT, cve_id VARCHAR(100), vendor VARCHAR(100), product VARCHAR(100), vuln_name VARCHAR(255), campaign_use boolean, notes text, PRIMARY KEY(id));")
-    mycursor.execute("CREATE TABLE cve_iocs(id INT AUTO_INCREMENT, cve_id VARCHAR(100), ioc_type VARCHAR(100), ioc_value VARCHAR(255), indicator_id VARCHAR(20), PRIMARY KEY(id));")
+    mycursor.execute(
+        "CREATE TABLE known_exploited(id INT AUTO_INCREMENT, cve_id VARCHAR(100), vendor VARCHAR(100), product VARCHAR(100), vuln_name VARCHAR(255), campaign_use boolean, notes text, PRIMARY KEY(id));")
+    mycursor.execute(
+        "CREATE TABLE cve_iocs(id INT AUTO_INCREMENT, cve_id VARCHAR(100), ioc_type VARCHAR(100), ioc_value VARCHAR(255), indicator_id VARCHAR(20), PRIMARY KEY(id));")
 
 
 def check_if_cve_in_db(cve_id):
@@ -94,7 +96,7 @@ def retrieve_cve_data_from_db(cve_id):
 
 def retrieve_ioc_data_from_db(indicator_id):
     """ get ioc data from the cve_iocs database
-    
+
     :param indicator_id: indicator ID used by Pulse, such as '4003607808'
     :return: dict of ioc information
     """
@@ -129,7 +131,31 @@ def retrieve_cve_iocs_from_db(cve_id):
     res = mycursor.fetchall()
     if not res:
         print(f"[-] {cve_id} not found in DB")
-        return 0
+        return 1
+
+    iocs = []
+
+    for i in list(res):
+        dc = {
+            "id": i[0],
+            "cve_id": i[1],
+            "ioc_type": i[2],
+            "ioc_value": i[3],
+            "indicator_id": i[4]
+        }
+        iocs.append(dc)
+
+    return iocs
+
+
+def retrieve_all_iocs_from_db():
+    mycursor = mydb.cursor()
+    q = "SELECT * FROM cve_iocs;"
+    mycursor.execute(q)
+    res = mycursor.fetchall()
+    if not res:
+        print(f"[-] no IOCs found in DB")
+        return 1
 
     iocs = []
 
@@ -237,4 +263,3 @@ def add_ioc_to_db(ioc):
     except mysql.connector.errors.ProgrammingError as e:
         print(f"[-] Error in query syntax - are the data types correct? {q}\n{e}")
         return 0
-

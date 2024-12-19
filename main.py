@@ -107,6 +107,7 @@ def get_main_action_choice():
         "Update IOC database - single CVE",
         "Create file - all KEVs (json)",
         "Create file - all IOCs for CVE (csv)",
+        "Create file - all IOCs (csv)",
         "Update KEV and IOC database - all KEVs and IOCs"
     ])
 
@@ -149,6 +150,25 @@ def get_main_action_choice():
             print(f'[-] no data found, file creation failed\n')
         get_main_action_choice()
 
+
+    elif c1 == "Create file - all IOCs (csv)":
+        data = db_interaction.retrieve_all_iocs_from_db()
+        if data:
+            keys = data[0].keys()
+
+            filename = "all_ioc_data.csv"
+
+            with open(filename, mode='w', newline='', encoding='utf8') as file:
+                writer = csv.DictWriter(file, fieldnames=keys)
+                writer.writeheader()
+                writer.writerows(data)
+
+            print(f'[+] CSV file {filename} created\n')
+        else:
+            print(f'[-] no data found, file creation failed\n')
+        get_main_action_choice()
+
+
     elif c1 == "Update KEV and IOC database - all KEVs and IOCs":
         if get_user_choice("Warning: This is slow! Are you sure?", ["Y", "N"]) != "Y":
             print("Aborting...\n")
@@ -160,4 +180,3 @@ def get_main_action_choice():
 
 if __name__ == "__main__":
     get_main_action_choice()  # on first run, use db_interaction.set_up_db()
-
